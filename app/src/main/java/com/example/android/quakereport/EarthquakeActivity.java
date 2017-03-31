@@ -28,13 +28,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class EarthquakeActivity extends AppCompatActivity implements LoaderCallbacks<List<Earthquake>> {
 //public class EarthquakeActivity extends AppCompatActivity {
-
+    /*TextView that is displayed when the List is empty*/
+    private TextView mEmptystateTextView;
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -66,6 +69,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
+
+        mEmptystateTextView = (TextView)findViewById(R.id.empty_view);
+        earthquakeListView.setEmptyView(mEmptystateTextView);
 
         // Create a new adapter that takes an empty list of earthquakes as input
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -124,6 +130,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+
+        //Set empty state text to display "no earthquake found".
+        mEmptystateTextView.setText(R.string.no_earthquakes);
         Log.i(LOG_TAG,"TEST:onLoadFinished() called...");
         // Clear the adapter of previous earthquake data
         mAdapter.clear();
@@ -131,7 +140,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if (earthquakes != null && !earthquakes.isEmpty()) {
-            mAdapter.addAll(earthquakes);
+            //mAdapter.addAll(earthquakes);
         }
     }
 
