@@ -39,6 +39,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
     /*TextView that is displayed when the List is empty*/
     private TextView mEmptystateTextView;
 
+
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
      * This really only comes into play if you're using multiple loaders.
@@ -66,6 +67,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         Log.i(LOG_TAG,"TEST:EarthquakeActivity onCreate() called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
+
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
@@ -130,6 +132,10 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+
+        View loadingIndicator = findViewById(R.id.loading_indicator);
+        //Hide progressbar when load finished
+        loadingIndicator.setVisibility(View.GONE);
 
         //Set empty state text to display "no earthquake found".
         mEmptystateTextView.setText(R.string.no_earthquakes);
