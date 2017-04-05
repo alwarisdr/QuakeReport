@@ -21,10 +21,12 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -57,7 +59,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     //*2---start
     /** URL for earthquake data from the USGS dataset */
-    private static final String USGS_REQUEST_URL = "http://earthquake.usgs.gov/fdsnws/event/1/query";
+    private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query";
             //"https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=6&limit=10";
 
     //*2---end
@@ -150,8 +152,21 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
         Log.i(LOG_TAG,"TEST:onCreateLoader() called...");
+
+        SharedPreferences sharePrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String minMagnitude = sharePrefs.getString(
+                getString(R.string.setting_min_magnitude_key),
+                getString(R.string.setting_min_magnitude_default));
+        Uri baseUri = Uri.parse(USGS_REQUEST_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendQueryParameter("format","geojson");
+        uriBuilder.appendQueryParameter("limit","10");
+        uriBuilder.appendQueryParameter("minmag",minMagnitude);
+        uriBuilder.appendQueryParameter("orderby","time");
+
         // Create a new loader for the given URL
-        return new EarthquakeLoader(this, USGS_REQUEST_URL);
+        return new EarthquakeLoader(this, uriBuilder.toString());
     }
 
 
