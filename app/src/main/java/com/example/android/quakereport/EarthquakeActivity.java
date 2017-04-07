@@ -151,23 +151,29 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
-        Log.i(LOG_TAG,"TEST:onCreateLoader() called...");
 
-        SharedPreferences sharePrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String minMagnitude = sharePrefs.getString(
-                getString(R.string.setting_min_magnitude_key),
-                getString(R.string.setting_min_magnitude_default));
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String minMagnitude = sharedPrefs.getString(
+                getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default));
+
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
+
         Uri baseUri = Uri.parse(USGS_REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        uriBuilder.appendQueryParameter("format","geojson");
-        uriBuilder.appendQueryParameter("limit","10");
-        uriBuilder.appendQueryParameter("minmag",minMagnitude);
-        uriBuilder.appendQueryParameter("orderby","time");
+        uriBuilder.appendQueryParameter("format", "geojson");
+        uriBuilder.appendQueryParameter("limit", "10");
+        uriBuilder.appendQueryParameter("minmag", minMagnitude);
+        uriBuilder.appendQueryParameter("orderby", orderBy);
 
-        // Create a new loader for the given URL
         return new EarthquakeLoader(this, uriBuilder.toString());
     }
+
+  
 
 
 
